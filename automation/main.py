@@ -70,10 +70,12 @@ def get_existing_place(place_name, api_url, token):
     return None, None
 
 PROMPT_MAP = {
-    'Ayasofya Camii': 'Hagia Sophia exterior, historical mosque building, architectural photography',
-    'Galata Kulesi': 'Galata Tower Istanbul, medieval stone tower, city landscape',
-    'Peri Bacaları': 'Cappadocia fairy chimneys, natural rock formations, turkey landscape',
-    'Efes Antik Kenti': 'Ephesus ancient city ruins, historical marble columns'
+    'Eyfel Kulesi': 'Eiffel Tower Paris, highly detailed architectural photography, daytime, beautiful sky',
+    'Louvre Müzesi': 'Louvre Museum Paris glass pyramid, highly detailed, beautiful sunset',
+    'Kolezyum': 'Colosseum Rome, historical ruins, cinematic lighting, 8k',
+    'Trevi Çeşmesi': 'Trevi Fountain Rome, beautiful water fountain, marble sculptures, sunny day',
+    'Özgürlük Anıtı': 'Statue of Liberty New York, landscape, cinematic, beautiful lighting',
+    'Central Park': 'Central Park New York, beautiful trees, skyscrapers in background, sunny day'
 }
 
 def get_place_image(place_name, api_url, token):
@@ -330,58 +332,81 @@ def create_or_update_place(place, tr_place_id, en_place_id, tr_city_id, en_city_
                 
     return tr_place_id is not None
 
+def delete_all_records(api_url, token):
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    print("Deleting existing places...")
+    try:
+        resp = requests.get(f"{api_url}/api/places", headers=headers, params={"locale": "all", "pagination[pageSize]": 100})
+        if resp.status_code == 200:
+            for item in resp.json().get('data', []):
+                requests.delete(f"{api_url}/api/places/{item['id']}", headers=headers)
+                print(f"   Deleted place ID: {item['id']}")
+    except Exception as e:
+        print(f"Error deleting places: {e}")
+
+    print("Deleting existing cities...")
+    try:
+        resp = requests.get(f"{api_url}/api/cities", headers=headers, params={"locale": "all", "pagination[pageSize]": 100})
+        if resp.status_code == 200:
+            for item in resp.json().get('data', []):
+                requests.delete(f"{api_url}/api/cities/{item['id']}", headers=headers)
+                print(f"   Deleted city ID: {item['id']}")
+    except Exception as e:
+        print(f"Error deleting cities: {e}")
+
 def main():
     check_config()
     
     mock_data = [
         {
-            "name": "İstanbul",
-            "country": "Türkiye",
-            "description": "Tarihin ve modernitenin buluştuğu, iki kıtayı birleştiren büyüleyici metropol.",
+            "name": "Paris",
+            "country": "Fransa",
+            "description": "Aşkın, sanatın ve modanın başkenti. Işıklar şehri olarak bilinen romantik metropol.",
             "places": [
                 {
-                    "name": "Ayasofya Camii",
-                    "description": "Tarihi yarımadada yer alan, mimarlık tarihinin en önemli eserlerinden biri olan görkemli yapı.",
+                    "name": "Eyfel Kulesi",
+                    "description": "Paris'in ve Fransa'nın sembolü olan dünyaca ünlü demir kule.",
                     "rating": 9.8
                 },
                 {
-                    "name": "Galata Kulesi",
-                    "description": "İstanbul'un panoramik manzarasını sunan, Cenevizliler döneminden kalma tarihi kule.",
-                    "rating": 9.3
+                    "name": "Louvre Müzesi",
+                    "description": "Dünyanın en büyük ve en ünlü sanat müzelerinden biri. Mona Lisa'ya ev sahipliği yapar.",
+                    "rating": 9.7
                 }
             ]
         },
         {
-            "name": "Kapadokya",
-            "country": "Türkiye",
-            "description": "Eşsiz kaya oluşumları, yer altı şehirleri ve sıcak hava balonlarıyla masalsı bölge.",
+            "name": "Roma",
+            "country": "İtalya",
+            "description": "Tarih, sanat ve kültürle harmanlanmış Ebedi Şehir. Antik kalıntıların modern yaşamla iç içe olduğu yer.",
             "places": [
                 {
-                    "name": "Göreme Açık Hava Müzesi",
-                    "description": "Kaya içine oyulmuş kiliseleri, manastırları ve eşsiz freskleriyle ünlü tarihi açık hava müzesi.",
-                    "rating": 9.5
+                    "name": "Kolezyum",
+                    "description": "Antik Roma'nın gladyatör dövüşlerine sahne olan devasa amfitiyatrosu.",
+                    "rating": 9.9
                 },
                 {
-                    "name": "Peri Bacaları",
-                    "description": "Doğa olayları sonucu oluşmuş, Kapadokya'nın simgesi olan benzersiz kaya oluşumları.",
+                    "name": "Trevi Çeşmesi",
+                    "description": "Aşk Çeşmesi olarak da bilinen, içine bozuk para atıp dilek tutulan ünlü barok çeşme.",
                     "rating": 9.6
                 }
             ]
         },
         {
-            "name": "İzmir",
-            "country": "Türkiye",
-            "description": "Ege'nin incisi, tarihi liman kenti ve canlı kültürüyle bilinen modern sahil şehri.",
+            "name": "New York",
+            "country": "Amerika Birleşik Devletleri",
+            "description": "Hiç uyumayan şehir. Devasa gökdelenleri, kültürel çeşitliliği ve enerjisiyle ünlü metropol.",
             "places": [
                 {
-                    "name": "Efes Antik Kenti",
-                    "description": "Antik dünyanın en önemli metropollerinden biri olan, Celsus Kütüphanesi ve antik tiyatrosuyla ünlü ören yeri.",
-                    "rating": 9.7
+                    "name": "Özgürlük Anıtı",
+                    "description": "Amerika'nın özgürlük sembolü olan, Özgürlük Adası'nda yer alan devasa bakır heykel.",
+                    "rating": 9.5
                 },
                 {
-                    "name": "Saat Kulesi",
-                    "description": "İzmir Konak Meydanı'nda yer alan, 1901 yapımı şehrin simgesi olan tarihi saat kulesi.",
-                    "rating": 9.0
+                    "name": "Central Park",
+                    "description": "Manhattan'ın göbeğinde yer alan devasa ve huzur dolu şehir parkı.",
+                    "rating": 9.4
                 }
             ]
         }
@@ -393,6 +418,9 @@ def main():
     
     print("Starting Automation Pipeline...")
     print(f"Connecting to Strapi API at {api_url}")
+    
+    # Delete existing data first
+    delete_all_records(api_url, token)
     
     for city_data in mock_data:
         city_name = city_data['name']

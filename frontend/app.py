@@ -23,8 +23,8 @@ lang = st.sidebar.selectbox(
 locale = "tr" if "TR" in lang else "en"
 t = {
     "tr": {
-        "title": "🌍 YZ Destekli Gezi Rehberi",
-        "subtitle": "Yapay zekâ ile zenginleştirilmiş akıllı gezi rehberi.",
+        "title": "🌍 YZ Destekli Uluslararası Gezi Rehberi",
+        "subtitle": "Yapay zekâ ile zenginleştirilmiş modern ve global gezi rehberi.",
         "select_city": "Bir Şehir Seçin",
         "popular_places": "Gezilecek Popüler Mekanlar",
         "rating": "Puan",
@@ -37,8 +37,8 @@ t = {
         "about_desc": "Bu uygulama Strapi v4, Python otomasyonu (çeviri + Pollinations AI görsel üretimi) ve Streamlit kullanılarak geliştirilmiştir."
     },
     "en": {
-        "title": "🌍 AI-Powered Travel Guide",
-        "subtitle": "Smart travel guide enriched with AI-generated visuals and automatic translations.",
+        "title": "🌍 AI-Powered Global Travel Guide",
+        "subtitle": "Modern and smart travel guide enriched with AI-generated visuals.",
         "select_city": "Select a City",
         "popular_places": "Popular Places to Visit",
         "rating": "Rating",
@@ -52,8 +52,22 @@ t = {
     }
 }[locale]
 
-st.markdown(f"<h1 style='text-align: center; font-weight: 800; font-size: 3rem;'>{t['title']}</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: gray; font-size: 1.25rem; margin-bottom: 2rem;'>{t['subtitle']}</p>", unsafe_allow_html=True)
+# Custom CSS for modern look
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    html, body, [class*="css"]  {
+        font-family: 'Inter', sans-serif;
+    }
+    .stSelectbox label {
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(f"<h1 style='text-align: center; font-weight: 800; font-size: 4rem; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0;'>{t['title']}</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #636e72; font-size: 1.3rem; margin-top: 10px; margin-bottom: 3rem; font-weight: 400;'>{t['subtitle']}</p>", unsafe_allow_html=True)
 
 if not api_token:
     st.warning(t["enter_token_warning"])
