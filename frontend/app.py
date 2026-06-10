@@ -139,4 +139,4 @@ st.sidebar.markdown(f"#### ℹ️ {t['about_title']}")
 st.sidebar.info(t["about_desc"])
 
 st.divider()
-st.markdown("<p style='text-align: center; color: gray; font-size: 0.9rem;'>BIP210 Final Projesi | Geliştirici: Bahattin</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray; font-size: 0.9rem;'>BIP210 Final Projesi | Geliştirici: Fikri</p>", unsafe_allow_html=True)
